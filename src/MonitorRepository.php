@@ -111,6 +111,14 @@ class MonitorRepository
         return $model::where('url', (string) $url)->first();
     }
 
+    public static function findById($id)
+    {
+        $model = static::determineMonitorModel();
+        $id = (int) $id;
+        
+        return $model::where('id', $id)->first();
+    }
+
     protected static function query()
     {
         $modelClass = static::determineMonitorModel();

@@ -23,7 +23,8 @@ class Healthy
             $certificateFound = '';
             $certificateExpirationDate = '';
             $certificateIssuer = '';
-
+            
+            $id = $monitor->id;
             $url = $monitor->url;
 
             $reachable = $monitor->uptimeStatusAsEmoji;
@@ -36,10 +37,10 @@ class Healthy
                 $certificateIssuer = $monitor->certificate_issuer;
             }
 
-            return compact('url', 'reachable', 'onlineSince', 'certificateFound', 'certificateExpirationDate', 'certificateIssuer');
+            return compact('id', 'url', 'reachable', 'onlineSince', 'certificateFound', 'certificateExpirationDate', 'certificateIssuer');
         });
 
-        $titles = ['URL', 'Uptime check', 'Online since', 'Certificate check', 'Certificate Expiration date', 'Certificate Issuer'];
+        $titles = ['ID', 'URL', 'Uptime check', 'Online since', 'Certificate check', 'Certificate Expiration date', 'Certificate Issuer'];
 
         ConsoleOutput::table($titles, $rows);
         ConsoleOutput::line('');

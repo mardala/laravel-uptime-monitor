@@ -20,12 +20,13 @@ class Disabled
         ConsoleOutput::warn('=================');
 
         $rows = $disabledMonitors->map(function (Monitor $monitor) {
+            $id = $monitor->id;
             $url = $monitor->url;
 
-            return compact('url');
+            return compact('id', 'url');
         });
 
-        $titles = ['URL'];
+        $titles = ['ID', 'URL'];
 
         ConsoleOutput::table($titles, $rows);
         ConsoleOutput::line('');

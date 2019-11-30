@@ -20,14 +20,15 @@ class CertificateCheckFailed
         ConsoleOutput::warn('========================');
 
         $rows = $monitorsWithFailingCertificateChecks->map(function (Monitor $monitor) {
+            $id = $monitor->id;
             $url = $monitor->url;
 
             $reason = $monitor->chunkedLastCertificateCheckFailureReason;
 
-            return compact('url', 'reason');
+            return compact('id', 'url', 'reason');
         });
 
-        $titles = ['URL', 'Problem description'];
+        $titles = ['ID', 'URL', 'Problem description'];
 
         ConsoleOutput::table($titles, $rows);
         ConsoleOutput::line('');

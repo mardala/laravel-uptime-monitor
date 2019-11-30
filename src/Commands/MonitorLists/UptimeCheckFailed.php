@@ -24,6 +24,7 @@ class UptimeCheckFailed
             $certificateExpirationDate = '';
             $certificateIssuer = '';
 
+            $id = $monitor->id;
             $url = $monitor->url;
 
             $reachable = $monitor->uptimeStatusAsEmoji;
@@ -38,10 +39,10 @@ class UptimeCheckFailed
                 $certificateIssuer = $monitor->certificate_issuer;
             }
 
-            return compact('url', 'reachable', 'offlineSince', 'reason', 'certificateFound', 'certificateExpirationDate', 'certificateIssuer');
+            return compact('id', 'url', 'reachable', 'offlineSince', 'reason', 'certificateFound', 'certificateExpirationDate', 'certificateIssuer');
         });
 
-        $titles = ['URL', 'Reachable', 'Offline since', 'Reason', 'Certificate', 'Certificate expiration date', 'Certificate issuer'];
+        $titles = ['ID', 'URL', 'Reachable', 'Offline since', 'Reason', 'Certificate', 'Certificate expiration date', 'Certificate issuer'];
 
         ConsoleOutput::table($titles, $rows);
         ConsoleOutput::line('');

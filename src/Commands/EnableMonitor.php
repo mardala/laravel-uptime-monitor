@@ -13,8 +13,26 @@ class EnableMonitor extends BaseCommand
     public function handle()
     {
         foreach (explode(',', $this->argument('url')) as $url) {
-            $this->enableMonitor(trim($url));
+            if( is_numeric($url) ){
+                $this->enableMonitorById(trim($url));
+            }else{
+                $this->enableMonitor(trim($url));
+            }
         }
+    }
+
+    protected function enableMonitorById($id)
+    {
+        if (! is_numeric($id) || ! $monitor = MonitorRepository::findById($id)) {
+            $this->error("There is no monitor configured with the id `{$id}`.");
+
+            return;
+        }
+
+        $url = $monitor->url;
+        $monitor->enable();
+
+        $this->info("The checks for url `{$url}` are now enabled.");
     }
 
     protected function enableMonitor(string $url)

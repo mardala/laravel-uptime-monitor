@@ -20,12 +20,13 @@ class Unchecked
         ConsoleOutput::warn('===============');
 
         $rows = $uncheckedMonitors->map(function (Monitor $monitor) {
+            $id = $monitor->id;
             $url = $monitor->url;
 
-            return compact('url');
+            return compact('id','url');
         });
 
-        $titles = ['URL'];
+        $titles = ['ID','URL'];
 
         ConsoleOutput::table($titles, $rows);
         ConsoleOutput::line('');
