@@ -9,6 +9,7 @@ class CheckUptime extends BaseCommand
 {
     protected $signature = 'monitor:check-uptime
                             {--url= : Only check these urls}
+                            {--id= : Only check these ids}
                             {--f|force : Force run all monitors }';
 
     protected $description = 'Check the uptime of all sites';
@@ -20,6 +21,12 @@ class CheckUptime extends BaseCommand
         if ($url = $this->option('url')) {
             $monitors = $monitors->filter(function (Monitor $monitor) use ($url) {
                 return in_array((string) $monitor->url, explode(',', $url));
+            });
+        }
+
+        if ($id = $this->option('id')) {
+            $monitors = $monitors->filter(function (Monitor $monitor) use ($id) {
+                return in_array((int) $monitor->id, explode(',', $id));
             });
         }
 
