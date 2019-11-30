@@ -143,6 +143,20 @@ You'll find the documentation on [https://docs.spatie.be/laravel-uptime-monitor]
 
 Find yourself stuck using the package? Found a bug? Do you have general questions or suggestions for improving the uptime monitor? Feel free to [create an issue on GitHub](https://github.com/spatie/laravel-uptime-monitor/issues), we'll try to address it as soon as possible.
 
+## Changes with this Fork
+Added ability to view and use the ID of the row to manage monitors. E.g. the list command will show all with the ID field.
+```
+php artisan monitor:list
+```
+
+Then if you need to disable / enable a monitor with a given ID:
+```
+php artisan monitor:disable 42
+php artisan monitor:enable 42
+```
+
+TODO - setup running forced checks by ID.
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.

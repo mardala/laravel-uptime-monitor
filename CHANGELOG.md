@@ -3,6 +3,8 @@
 All notable changes to `laravel-uptime-monitor` will be documented in this file
 
 ## Unreleased
+### Added
+- Ability to use IDs instead of URLs to manage monitors
 
 ## 2.6.9 - 2019-09-10
 ### Added
