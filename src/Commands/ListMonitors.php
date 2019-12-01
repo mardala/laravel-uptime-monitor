@@ -8,6 +8,9 @@ use Spatie\UptimeMonitor\Commands\MonitorLists\Disabled;
 use Spatie\UptimeMonitor\Commands\MonitorLists\Unchecked;
 use Spatie\UptimeMonitor\Commands\MonitorLists\UptimeCheckFailed;
 use Spatie\UptimeMonitor\Commands\MonitorLists\CertificateCheckFailed;
+use Spatie\UptimeMonitor\Commands\MonitorLists\DomainExpirationCheckFailed;
+use Spatie\UptimeMonitor\Commands\MonitorLists\DomainExpired;
+use Spatie\UptimeMonitor\Commands\MonitorLists\DomainExpiringSoon;
 
 class ListMonitors extends BaseCommand
 {
@@ -28,6 +31,9 @@ class ListMonitors extends BaseCommand
         Disabled::display();
         UptimeCheckFailed::display();
         CertificateCheckFailed::display();
+        DomainExpirationCheckFailed::display();
+        DomainExpired::display();
+        DomainExpiringSoon::display();
         Healthy::display();
     }
 }

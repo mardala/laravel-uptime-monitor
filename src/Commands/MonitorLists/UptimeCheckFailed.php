@@ -39,10 +39,16 @@ class UptimeCheckFailed
                 $certificateIssuer = $monitor->certificate_issuer;
             }
 
-            return compact('id', 'url', 'reachable', 'offlineSince', 'reason', 'certificateFound', 'certificateExpirationDate', 'certificateIssuer');
+            if ($monitor->domain_expiration_check_enabled){
+                $expirationFound = $monitor->expirationStatusAsEmoji;
+                $expirationDate = $monitor->formattedDomainExpirationDate('forHumans');
+                $registrar = $monitor->registrar;
+            }
+
+            return compact('id', 'url', 'reachable', 'offlineSince', 'reason', 'certificateFound', 'certificateExpirationDate', 'certificateIssuer', 'expirationFound', 'expirationDate', 'registrar');
         });
 
-        $titles = ['ID', 'URL', 'Reachable', 'Offline since', 'Reason', 'Certificate', 'Certificate expiration date', 'Certificate issuer'];
+        $titles = ['ID', 'URL', 'Reachable', 'Offline since', 'Reason', 'Certificate', 'Certificate expiration date', 'Certificate issuer', 'Expiration check', 'Expiration Date', 'Domain Registrar'];
 
         ConsoleOutput::table($titles, $rows);
         ConsoleOutput::line('');

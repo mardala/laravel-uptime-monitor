@@ -23,6 +23,10 @@ class Healthy
             $certificateFound = '';
             $certificateExpirationDate = '';
             $certificateIssuer = '';
+
+            $expirationFound = '';
+            $expirationDate = '';
+            $registrar = '';
             
             $id = $monitor->id;
             $url = $monitor->url;
@@ -37,10 +41,16 @@ class Healthy
                 $certificateIssuer = $monitor->certificate_issuer;
             }
 
-            return compact('id', 'url', 'reachable', 'onlineSince', 'certificateFound', 'certificateExpirationDate', 'certificateIssuer');
+            if ($monitor->domain_expiration_check_enabled){
+                $expirationFound = $monitor->expirationStatusAsEmoji;
+                $expirationDate = $monitor->formattedDomainExpirationDate('forHumans');
+                $registrar = $monitor->domain_registrar;
+            }
+
+            return compact('id', 'url', 'reachable', 'onlineSince', 'certificateFound', 'certificateExpirationDate', 'certificateIssuer', 'expirationFound', 'expirationDate', 'registrar');
         });
 
-        $titles = ['ID', 'URL', 'Uptime check', 'Online since', 'Certificate check', 'Certificate Expiration date', 'Certificate Issuer'];
+        $titles = ['ID', 'URL', 'Uptime Check', 'Online', 'Cert Check', 'Cert Exp date', 'Cert Issuer', 'Exp check', 'Exp Date', 'Registrar'];
 
         ConsoleOutput::table($titles, $rows);
         ConsoleOutput::line('');

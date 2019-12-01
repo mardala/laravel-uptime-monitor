@@ -9,7 +9,8 @@ use Spatie\UptimeMonitor\Models\Enums\CertificateStatus;
 class CheckCertificates extends BaseCommand
 {
     protected $signature = 'monitor:check-certificate
-                           {--url= : Only check these urls} {--id= : Only check these ids}';
+                           {--url= : Only check these urls} 
+                           {--id= : Only check these ids}';
 
     protected $description = 'Check the certificates of all sites';
 

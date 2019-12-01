@@ -6,45 +6,33 @@ use Spatie\UptimeMonitor\MonitorRepository;
 
 class EnableMonitor extends BaseCommand
 {
-    protected $signature = 'monitor:enable {url}';
+    protected $signature = 'monitor:enable {input : ID or URL}';
 
     protected $description = 'Enable a monitor';
 
     public function handle()
     {
-        foreach (explode(',', $this->argument('url')) as $url) {
-            if( is_numeric($url) ){
-                $this->enableMonitorById(trim($url));
-            }else{
-                $this->enableMonitor(trim($url));
+        foreach (explode(',', $this->argument('input')) as $input) {
+            $this->enableMonitor(trim($input));
+        }
+    }
+
+    protected function enableMonitor($input)
+    {
+        if(is_numeric($input)){
+            if (! $monitor = MonitorRepository::findById($input)) {
+                $this->error("There is no monitor configured with the id `{$input}`.");
+                return;
+            }
+        }else{
+            if (! $monitor = MonitorRepository::findByUrl($input)) {
+                $this->error("There is no monitor configured for url `{$input}`.");
+                return;
             }
         }
-    }
-
-    protected function enableMonitorById($id)
-    {
-        if (! is_numeric($id) || ! $monitor = MonitorRepository::findById($id)) {
-            $this->error("There is no monitor configured with the id `{$id}`.");
-
-            return;
-        }
-
-        $url = $monitor->url;
-        $monitor->enable();
-
-        $this->info("The checks for url `{$url}` are now enabled.");
-    }
-
-    protected function enableMonitor(string $url)
-    {
-        if (! $monitor = MonitorRepository::findByUrl($url)) {
-            $this->error("There is no monitor configured for url `{$url}`.");
-
-            return;
-        }
 
         $monitor->enable();
 
-        $this->info("The checks for url `{$url}` are now enabled.");
+        $this->info("The checks for `{$monitor->id}` : `{$monitor->url}` are now enabled.");
     }
 }

@@ -4,6 +4,7 @@ namespace Spatie\UptimeMonitor\Models\Presenters;
 
 use Spatie\UptimeMonitor\Models\Enums\UptimeStatus;
 use Spatie\UptimeMonitor\Models\Enums\CertificateStatus;
+use Spatie\UptimeMonitor\Models\Enums\DomainExpirationStatus;
 
 trait MonitorPresenter
 {
@@ -33,6 +34,23 @@ trait MonitorPresenter
         return '';
     }
 
+    public function getExpirationStatusAsEmojiAttribute(): string
+    {
+        if ($this->domain_expiration_status === DomainExpirationStatus::SAFE) {
+            return '✅';
+        }
+
+        if ($this->domain_expiration_status === DomainExpirationStatus::EXPIRING) {
+            return '⚠️';
+        }
+
+        if ($this->domain_expiration_status === DomainExpirationStatus::EXPIRED) {
+            return '❌';
+        }
+
+        return '';
+    }
+
     public function formattedLastUpdatedStatusChangeDate(string $format = ''): string
     {
         return $this->formatDate('uptime_status_last_change_date', $format);
@@ -41,6 +59,11 @@ trait MonitorPresenter
     public function formattedCertificateExpirationDate(string $format = ''): string
     {
         return $this->formatDate('certificate_expiration_date', $format);
+    }
+
+    public function formattedDomainExpirationDate(string $format = ''): string
+    {
+        return $this->formatDate('domain_expiration_date', $format);
     }
 
     public function getChunkedLastFailureReasonAttribute(): string
@@ -59,6 +82,15 @@ trait MonitorPresenter
         }
 
         return chunk_split($this->certificate_check_failure_reason, 60, "\n");
+    }
+
+    public function getChunkedLastExpirationCheckFailureReasonAttribute(): string
+    {
+        if ($this->domain_expiration_check_failure_reason == '') {
+            return '';
+        }
+
+        return chunk_split($this->domain_expiration_check_failure_reason, 60, "\n");
     }
 
     protected function formatDate(string $attributeName, string $format = ''): string

@@ -21,6 +21,8 @@ class CreateMonitor extends BaseCommand
             }
         }
 
+        $expiration = $this->confirm('Do you want to monitor domain expiration?');
+
         if ($this->confirm('Should we look for a specific string on the response?')) {
             $lookForString = $this->ask('Which string?');
         }
@@ -30,6 +32,7 @@ class CreateMonitor extends BaseCommand
             'look_for_string' => $lookForString ?? '',
             'uptime_check_method' => isset($lookForString) ? 'get' : 'head',
             'certificate_check_enabled' => $url->getScheme() === 'https',
+            'domain_expiration_check_enabled' => $expiration,
             'uptime_check_interval_in_minutes' => config('uptime-monitor.uptime_check.run_interval_in_minutes'),
         ]);
 

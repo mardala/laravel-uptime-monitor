@@ -117,6 +117,23 @@ return [
         'fire_expiring_soon_event_if_certificate_expires_within_days' => 10,
     ],
 
+    'expiration_check' => [
+
+        /*
+         * The `Spatie\UptimeMonitor\Events\DomainExpiresSoon` event will fire
+         * when a domain is found whose expiration date is in
+         * the next number of given days.
+         */
+        'fire_expiring_soon_event_if_domain_expires_within_days' => 30,
+
+        /**
+         * @todo Config option for custom whois servers
+         * @see https://packagist.org/packages/io-developer/php-whois
+         * @see https://github.com/io-developer/php-whois
+         */
+        'whois_servers' => [],
+    ],
+
     /*
      * To add or modify behaviour to the Monitor model you can specify your
      * own model here. The only requirement is that it should extend

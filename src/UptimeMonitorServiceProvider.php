@@ -11,6 +11,7 @@ use Spatie\UptimeMonitor\Commands\DeleteMonitor;
 use Spatie\UptimeMonitor\Commands\EnableMonitor;
 use Spatie\UptimeMonitor\Commands\DisableMonitor;
 use Spatie\UptimeMonitor\Commands\CheckCertificates;
+use Spatie\UptimeMonitor\Commands\CheckDomainExpiration;
 use Spatie\UptimeMonitor\Notifications\EventHandler;
 use Spatie\UptimeMonitor\Helpers\UptimeResponseCheckers\UptimeResponseChecker;
 
@@ -49,6 +50,7 @@ class UptimeMonitorServiceProvider extends ServiceProvider
 
         $this->app->bind('command.monitor:check-uptime', CheckUptime::class);
         $this->app->bind('command.monitor:check-certificate', CheckCertificates::class);
+        $this->app->bind('command.monitor:check-expiration', CheckDomainExpiration::class);
         $this->app->bind('command.monitor:sync-file', SyncFile::class);
         $this->app->bind('command.monitor:create', CreateMonitor::class);
         $this->app->bind('command.monitor:delete', DeleteMonitor::class);
@@ -64,6 +66,7 @@ class UptimeMonitorServiceProvider extends ServiceProvider
         $this->commands([
             'command.monitor:check-uptime',
             'command.monitor:check-certificate',
+            'command.monitor:check-expiration',
             'command.monitor:sync-file',
             'command.monitor:create',
             'command.monitor:delete',

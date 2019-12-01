@@ -7,14 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\UptimeMonitor\Models\Enums\UptimeStatus;
 use Spatie\UptimeMonitor\Exceptions\CannotSaveMonitor;
 use Spatie\UptimeMonitor\Models\Enums\CertificateStatus;
+use Spatie\UptimeMonitor\Models\Enums\DomainExpirationStatus;
 use Spatie\UptimeMonitor\Models\Traits\SupportsUptimeCheck;
 use Spatie\UptimeMonitor\Models\Presenters\MonitorPresenter;
 use Spatie\UptimeMonitor\Models\Traits\SupportsCertificateCheck;
+use Spatie\UptimeMonitor\Models\Traits\SupportsDomainExpirationCheck;
 
 class Monitor extends Model
 {
     use SupportsUptimeCheck;
     use SupportsCertificateCheck;
+    use SupportsDomainExpirationCheck;
     use MonitorPresenter;
 
     protected $guarded = [];
@@ -26,11 +29,13 @@ class Monitor extends Model
         'uptime_status_last_change_date',
         'uptime_check_failed_event_fired_on_date',
         'certificate_expiration_date',
+        'domain_expiration_date',
     ];
 
     protected $casts = [
         'uptime_check_enabled' => 'boolean',
         'certificate_check_enabled' => 'boolean',
+        'domain_expiration_check_enabled' => 'boolean',
     ];
 
     public function getUptimeCheckAdditionalHeadersAttribute($additionalHeaders)
@@ -49,7 +54,8 @@ class Monitor extends Model
     {
         return $query
             ->where('uptime_check_enabled', true)
-            ->orWhere('certificate_check_enabled', true);
+            ->orWhere('certificate_check_enabled', true)
+            ->orWhere('domain_expiration_check_enabled', true);
     }
 
     /**
@@ -93,6 +99,10 @@ class Monitor extends Model
             return false;
         }
 
+        if ($this->domain_expiration_check_enabled && ($this->domain_expiration_status === DomainExpirationStatus::FAILED || $this->domain_expiration_status === DomainExpirationStatus::EXPIRED) ) {
+            return false;
+        }
+
         return true;
     }
 
@@ -107,6 +117,8 @@ class Monitor extends Model
             $this->certificate_check_enabled = true;
         }
 
+        $this->domain_expiration_check_enabled = true;
+
         $this->save();
 
         return $this;
@@ -119,6 +131,7 @@ class Monitor extends Model
     {
         $this->uptime_check_enabled = false;
         $this->certificate_check_enabled = false;
+        $this->domain_expiration_check_enabled = false;
 
         $this->save();
 

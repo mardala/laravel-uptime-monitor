@@ -7,7 +7,9 @@ use Spatie\UptimeMonitor\Models\Monitor;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\UptimeMonitor\Models\Enums\UptimeStatus;
 use Spatie\UptimeMonitor\Models\Enums\CertificateStatus;
+use Spatie\UptimeMonitor\Models\Enums\DomainExpirationStatus;
 use Spatie\UptimeMonitor\Exceptions\InvalidConfiguration;
+// use Iodev\Whois\Whois;
 
 class MonitorRepository
 {
@@ -24,6 +26,7 @@ class MonitorRepository
 
         $monitors = $modelClass::where('uptime_check_enabled', false)
             ->where('certificate_check_enabled', false)
+            ->where('domain_expiration_check_enabled', false)
             ->get();
 
         return MonitorCollection::make($monitors)->sortByHost();
@@ -40,6 +43,15 @@ class MonitorRepository
     {
         $monitors = self::query()
             ->where('certificate_check_enabled', true)
+            ->get();
+
+        return MonitorCollection::make($monitors)->sortByHost();
+    }
+
+    public static function getForExpirationCheck(): Collection
+    {
+        $monitors = self::query()
+            ->where('domain_expiration_check_enabled', true)
             ->get();
 
         return MonitorCollection::make($monitors)->sortByHost();
@@ -72,6 +84,36 @@ class MonitorRepository
         return MonitorCollection::make($monitors)->sortByHost();
     }
 
+    public static function getWithFailingExpirationCheck(): Collection
+    {
+        $monitors = self::query()
+            ->where('domain_expiration_check_enabled', true)
+            ->where('domain_expiration_status', DomainExpirationStatus::FAILED)
+            ->get();
+
+        return MonitorCollection::make($monitors)->sortByHost();
+    }
+
+    public static function getWithDomainExpired()
+    {
+        $monitors = self::query()
+            ->where('domain_expiration_check_enabled', true)
+            ->where('domain_expiration_status', DomainExpirationStatus::EXPIRED)
+            ->get();
+
+        return MonitorCollection::make($monitors)->sortByHost();
+    }
+
+    public static function getWithDomainExpiring()
+    {
+        $monitors = self::query()
+            ->where('domain_expiration_check_enabled', true)
+            ->where('domain_expiration_status', DomainExpirationStatus::EXPIRING)
+            ->get();
+
+        return MonitorCollection::make($monitors)->sortByHost();
+    }
+
     public static function getUnhealthy(): Collection
     {
         $monitors = self::query()->get()->reject->isHealthy();
@@ -94,6 +136,11 @@ class MonitorRepository
                     ->where('certificate_check_enabled', true)
                     ->where('certificate_status', CertificateStatus::NOT_YET_CHECKED);
             })
+            ->orWhere(function (Builder $query) {
+                $query
+                    ->where('domain_expiration_check_enabled', true)
+                    ->where('domain_expiration_status', DomainExpirationStatus::NOT_YET_CHECKED);
+            })
             ->get();
 
         return MonitorCollection::make($monitors)->sortByHost();
@@ -111,6 +158,11 @@ class MonitorRepository
         return $model::where('url', (string) $url)->first();
     }
 
+    /**
+     * @param numeric $id
+     *
+     * @return \Spatie\UptimeMonitor\Models\Monitor
+     */
     public static function findById($id)
     {
         $model = static::determineMonitorModel();
