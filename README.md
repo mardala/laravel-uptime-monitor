@@ -125,6 +125,23 @@ return [
         'fire_expiring_soon_event_if_certificate_expires_within_days' => 10,
     ],
 
+    'expiration_check' => [
+
+        /*
+         * The `Spatie\UptimeMonitor\Events\DomainExpiresSoon` event will fire
+         * when a domain is found whose expiration date is in
+         * the next number of given days.
+         */
+        'fire_expiring_soon_event_if_domain_expires_within_days' => 30,
+
+        /**
+         * @todo Config option for custom whois servers
+         * @see https://packagist.org/packages/io-developer/php-whois
+         * @see https://github.com/io-developer/php-whois
+         */
+        'whois_servers' => [],
+    ],
+
     /*
      * To add or modify behaviour to the Monitor model you can specify your
      * own model here. The only requirement is that it should extend
@@ -144,18 +161,38 @@ You'll find the documentation on [https://docs.spatie.be/laravel-uptime-monitor]
 Find yourself stuck using the package? Found a bug? Do you have general questions or suggestions for improving the uptime monitor? Feel free to [create an issue on GitHub](https://github.com/spatie/laravel-uptime-monitor/issues), we'll try to address it as soon as possible.
 
 ## Changes with this Fork
+
+### Manage Monitors by ID
 Added ability to view and use the ID of the row to manage monitors. E.g. the list command will show all with the ID field. I find it easier to manage with IDs than copying / pasting the full urls.
 ```
 php artisan monitor:list
 ```
 
-Then if you need to disable/enable/check-uptime/check-certificate on a monitor with a given ID:
+Then if you need to disable/enable/check-uptime on a monitor with a given ID or 
 ```
 php artisan monitor:disable 42
 php artisan monitor:enable 42
 php artisan monitor:check-uptime 42
-php artisan monitor:check-certificate 42
 ```
+
+### New Monitor - Check Domain Registration
+Added a whois lookup on the domain to monitor if a domain is going to expire within the configured window. Config option:
+```
+'fire_expiring_soon_event_if_domain_expires_within_days' => 30,
+```
+
+New monitor examples:
+```
+monitor:check-expiration
+monitor:check-expiration --url=https://mardala.com
+monitor:check-expiration --id=42
+```
+
+#### TODO
+* Create tests for the domain expiration monitor
+* Create tests for using IDs
+* Create method for modifying / updating the data schema if using an existing installation.
+* Create a stand alone package with the entire install
 
 ## Changelog
 
