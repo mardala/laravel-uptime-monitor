@@ -23,10 +23,15 @@ trait SupportsDomainExpirationCheck
     {
         try {
             $whois = Whois::create();
-            $domain = $this->url->getHost();
+            $host = $this->url->getHost();
+            $domain = $this->getDomain($host);
             $info = $whois->loadDomainInfo($domain);
 
-            $this->setExpiration($info);
+            if( $info instanceof TldInfo ){
+                $this->setExpiration($info);
+            }else{
+                throw new ConnectionException("Domain {$domain} cannot connect to whois server.");
+            }
 
         } catch (Exception $e) {
             $this->setExpirationException($e);
@@ -99,5 +104,21 @@ trait SupportsDomainExpirationCheck
     {
         $carbon = Carbon::createFromTimestamp($expiration);
         return $carbon->isPast();
+    }
+
+    protected function getDomain(string $input) : string
+    {
+        $output = strtolower(trim($input));
+        $count = substr_count($output, '.');
+          
+        if($count === 2){
+            if(strlen(explode('.', $output)[1]) > 3){
+                $output = explode('.', $output, 2)[1];
+            }
+        } elseif($count > 2){
+            $output = get_domain(explode('.', $output, 2)[1]);
+        }
+
+        return $output;
     }
 }
