@@ -86,7 +86,7 @@ trait MonitorPresenter
 
     public function getChunkedLastExpirationCheckFailureReasonAttribute(): string
     {
-        if ($this->domain_expiration_check_failure_reason == '') {
+        if ( empty($this->domain_expiration_check_failure_reason) ) {
             return '';
         }
 

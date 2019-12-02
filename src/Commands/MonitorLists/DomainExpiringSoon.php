@@ -23,7 +23,7 @@ class DomainExpiringSoon
             $id = $monitor->id;
             $url = $monitor->url;
 
-            $reason = $monitor->getChunkedLastExpirationCheckFailureReasonAttribute;
+            $reason = $monitor->getChunkedLastExpirationCheckFailureReasonAttribute();
 
             return compact('id', 'url', 'reason');
         });
